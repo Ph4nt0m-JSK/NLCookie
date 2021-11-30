@@ -286,6 +286,17 @@ func initAsset() {
 				if groupCode := jd_cookie.Get("groupCode"); !s.IsAdmin() && groupCode != "" && s.GetChatID() != 0 && !strings.Contains(groupCode, fmt.Sprint(s.GetChatID())) {
 					return nil
 				}
+				if query_time := jd_cookie.Get("query_time"); query_time != "" {
+					res := regexp.MustCompile(`\d{2}:\d{2}`).FindAllString(query_time, -1)
+					fmt.Println(res)
+					if len(res) == 2 {
+						n := time.Now().Format("15:04")
+						fmt.Println(n)
+						if !(n >= res[0] && n <= res[1]) {
+							return query_time
+						}
+					}
+				}
 				s.Disappear(time.Second * 40)
 				envs, err := qinglong.GetEnvs("JD_COOKIE")
 				if err != nil {
